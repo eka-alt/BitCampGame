@@ -1,0 +1,251 @@
+<html>
+<head>
+<title>Write the Code!</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://static.codehs.com/gulp/c0af2e53d860c92800df29f3b6acce882421213e/chs-js-lib/chs.js"></script>
+
+
+<style>
+canvas {
+    border: 1px solid black;
+    display: inline-block;
+    vertical-align: top;
+}
+
+pre {
+    border: 1px solid black;
+    display: inline-block;
+    width: 400px;
+    height: 500px;
+    background-color: #F5F5F5;
+}
+</style>
+
+</head>
+
+<body>
+<h1>Write the Code!</h1>
+
+
+
+<canvas
+width="400"
+height="500"
+class="codehs-editor-canvas"></canvas>
+<pre id="console"></pre>
+
+<script>
+window.onload = function() {
+
+    var ball;
+var rect;
+
+var ballColor = new Color(0, 102, 53);
+
+var backCol = new Color(218, 163, 190);
+var BALL_RADIUS = 10;
+
+var paused = false;
+var image;
+
+var logoImage;
+
+var time = 10;
+var timeText;
+
+var logo0= "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTrRLYLJqXuteR1FlZIUtSyF7sm_BWkx4iYGQ&usqp=CAU";
+var logo1 ="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQBrlPWLvB5kYT-WnczeNhjyt5ZYLZ5_wIovA&usqp=CAU";
+var logo2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRijBnOa4Tu7aue7WctLMk9JXl97R3l2vGgig&usqp=CAU";
+var logo3 = "https://upload.wikimedia.org/wikipedia/ka/thumb/5/5e/GTU_CoA.svg/1200px-GTU_CoA.svg.png";
+var logo4 ="https://upload.wikimedia.org/wikipedia/ka/5/5f/UG-Logo.png";
+var logo5 ="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8ppOQ5jm6tXUWHZyXi0UrJ0EaA2bB3EipUw&usqp=CAU";
+var logo6 = "https://upload.wikimedia.org/wikipedia/commons/0/08/CaLogo.jpg";
+var logo7 ="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRNbC6QIJB0SQyUtxO9vqzU3rfChhtJHo9M1w&usqp=CAU";
+var logo8 ="https://upload.wikimedia.org/wikipedia/ka/1/1b/FreeUniLogo.png";
+var logo9="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRCdyEocackHb-gcLobr0EEizM1q4CPksz_fw&usqp=CAU";
+
+var count = 0;
+function start(){
+    paused =true;
+    
+    var back = new Rectangle(getWidth(), getHeight());
+    back.setPosition(0, 0);
+    back.setColor(backCol);
+    add(back);
+    
+	mouseClickMethod(pause);
+	
+    
+    
+    ball = new Circle(BALL_RADIUS);
+	ball.setPosition(50,getHeight()-60);
+	ball.setColor(ballColor);
+	add(ball);
+	
+    image = new WebImage("https://codehs.com/uploads/8b872cb9dacc2649247cb0bf8a0e5e8e");
+    image.setSize(100, 30);
+    image.setPosition(0, getHeight()-40);
+    add(image);
+    
+    moreLogos();
+    mouseMoveMethod(paddle);
+
+    setTimer(moving,15);
+    
+    setTimer(timer, 1100);
+    
+    timeText = new Text(time);
+	timeText.setPosition(getWidth()/2, 25);
+	add(timeText);
+	
+	
+	
+}
+function pause(e){
+    paused = !paused;
+}
+
+function logos(number, x, y){
+      logoImage = new WebImage(number);
+                   logoImage.setSize(40, 40);
+                   logoImage.setPosition(x,
+                                         y);
+                                         add(logoImage);
+    
+}
+
+function moreLogos(){
+logos(logo0, 0,30);
+logos(logo1, 40, 30);
+logos(logo2, 80, 30);
+logos(logo3, 120, 30);
+logos(logo4, 160, 30);
+logos(logo5, 200, 30);
+logos(logo6, 240, 30);
+logos(logo7, 280, 30);
+logos(logo8, 320, 30);
+logos(logo9, 360, 30); 
+
+}
+
+function paddle(e){
+
+    image.setPosition(e.getX()-50, getHeight()-40);
+
+	if (e.getX() <= 50) {
+	image.setPosition(0, getHeight()-40);
+	}
+	if (e.getX() >= (getWidth() - 50)) {
+	 
+    
+  image.setPosition(getWidth() - 100,getHeight()-40);
+	}
+	
+	//ball
+	
+	 ball.setPosition(e.getX(), getHeight()-60);
+
+	if (e.getX() <= 50) {
+	ball.setPosition(0+50, getHeight()-60);
+	}
+	if (e.getX() >= (getWidth() - 50)) {
+	    ball.setPosition(getWidth()-50,getHeight()-60);
+	}
+	 
+
+}
+
+
+function moving() {
+    if(!paused){
+    checkLogos();
+    ball.move(0, -5);
+    }
+}
+
+function checkLogos(){
+      
+     
+    var isLogo1 = getElementAt(ball.getX(), ball.getY() - BALL_RADIUS);
+    var isLogo2 = getElementAt(ball.getX() + BALL_RADIUS, ball.getY());
+    var isLogo3 = getElementAt(ball.getX(), ball.getY() + BALL_RADIUS);
+    var isLogo4 = getElementAt(ball.getX() - BALL_RADIUS, ball.getY());
+    
+     if(isLogo1!=null && ball.getY() < getHeight()-130){
+        if(isLogo1.getWidth()==40){
+        remove(isLogo1);
+
+        count ++;
+
+        }
+
+    }
+   
+    if(isLogo2!=null && ball.getY() < getHeight()-130){
+        if(isLogo2.getWidth()==40){
+        remove(isLogo2);
+    
+      count++;
+        }
+    }
+    
+    if(isLogo3!=null && ball.getY() < getHeight()-130){
+        if(isLogo3.getWidth()==40){
+        remove(isLogo3);
+    
+        count++;
+        }
+    }
+    
+    if(isLogo4!=null && ball.getY() < getHeight()-130){
+        if(isLogo4.getWidth()==40){
+        remove(isLogo4);
+        count++;
+        }
+    }
+   
+  if(count ==10){
+      paused=true;
+      displayMessage("You Win :)");
+      remove(ball);
+      stopTimer(timer);
+      
+  }
+ 	timeText.setText(time);
+ 	  if(time==0){
+ 	      paused=true;
+        displayMessage("Game Over:(");
+        remove(ball);
+        stopTimer(timer);
+    
+    }
+    if(time==0&&count==0){
+         paused=true;
+      displayMessage("You Win :)");
+      remove(ball);
+      stopTimer(timer);
+    }
+}
+function displayMessage(text){
+    
+	var msg = new Text(text);
+	msg.setPosition(getWidth()/2 - msg.getWidth()/2, 200);
+	add(msg);
+}
+
+function timer(){
+    time--;
+
+}
+
+
+    if (typeof start === 'function') {
+        start();
+    }
+};
+</script>
+
+</body>
+</html>
